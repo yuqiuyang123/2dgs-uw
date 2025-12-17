@@ -1,0 +1,15 @@
+build/ 
+*.o 
+*.obj 
+__pycache__/ 
+*.pyc 
+.vscode/ 
+.idea/ 
+*.pth 
+*.ply 
+data/ 
+datasets/ 
+output/ 
+eval_result/ 
+torchhub/ 
+.DS_Store 

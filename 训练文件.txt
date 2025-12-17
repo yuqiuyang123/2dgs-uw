@@ -1,0 +1,64 @@
+python train.py -s /root/autodl-tmp/data/db/playroom --iterations 10000    
+和3DGS一样
+cd submodules/diff-gaussian-rasterization
+python setup.py install
+
+cd ../simple-knn
+python setup.py install
+
+
+train.py里面已经融入render.py，所以不需要再单独render了
+加入物理模型之后要加新的指令use_seasplat
+
+python train.py -s /root/autodl-tmp/Sea-thru/Curasao \
+    -m /root/2d-gaussian-splatting-old-uw/output/Curasao-3 \
+    --use_seasplat \
+    --iterations 30000 \
+    --checkpoint_iterations 30000
+
+python train.py -s /root/autodl-tmp/Sea-thru/Curasao \
+    -m /root/2d-gaussian-splatting-old-uw/output/Curasao-20k-Warmup-2 \
+    --use_seasplat \
+    --iterations 30000 \
+    --checkpoint_iterations 30000 \
+    --start_seasplat_iter 20000 \
+    --seasplat_lr 0.005\
+    --lambda_bs 1.0
+
+python train.py -s /root/autodl-tmp/Sea-thru/Curasao \
+    -m /root/2d-gaussian-splatting-old-uw/output/Curasao-Shock \
+    --use_seasplat \
+    --iterations 30000 \
+    --checkpoint_iterations 30000 \
+    --start_seasplat_iter 20000 \
+    --seasplat_lr 0.005 \
+    --lambda_bs 10.0  # <--- [暴力修改] 增大10倍，强迫它必须把雾算进 B 里，不能藏在 J 里
+
+
+把output放在数据盘中
+
+python train.py -s /root/autodl-tmp/Sea-thru/Curasao \
+    -m /root/autodl-tmp/output-2d-old-uw1/Curasao-1 \
+    --use_seasplat \
+    --iterations 30000 \
+    --checkpoint_iterations 20000 30000 \
+    --start_seasplat_iter 20000 \
+    --seasplat_lr 0.005 \
+    --lambda_bs 10.0 \
+    --lambda_gw 0.2 \
+    --densify_grad_threshold 0.0002
+
+
+加入--eval划分测试集
+
+python train.py -s /root/autodl-tmp/Sea-thru/IUI3-RedSea \
+    -m /root/autodl-tmp/output-2d-old-uw1/IUI3-RedSea-1 \
+    --use_seasplat \
+    --iterations 30000 \
+    --checkpoint_iterations 20000 30000 \
+    --start_seasplat_iter 20000 \
+    --seasplat_lr 0.005 \
+    --lambda_bs 10.0 \
+    --lambda_gw 0.2 \
+    --densify_grad_threshold 0.0002 \
+    --eval
